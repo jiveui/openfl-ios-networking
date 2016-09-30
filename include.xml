@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<ndll name="openfl_ios_networking" />
+	<haxedef name="openfl_ios_networking" />
+
+	<include path="../extensionkit" />	
+	
+</project>
