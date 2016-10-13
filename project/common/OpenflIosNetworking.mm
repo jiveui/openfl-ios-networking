@@ -89,7 +89,7 @@ namespace openfl_ios_networking {
 		__block NSError *error;
 
 		NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *d, NSURLResponse *r, NSError *e) {
-			NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
+			// NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
             inData = [[NSData alloc] initWithData: d];
 			response = r;
 			error = e;

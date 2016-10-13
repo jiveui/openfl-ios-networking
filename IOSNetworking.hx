@@ -40,7 +40,7 @@ class IOSNetworkingEventDispatcher extends EventDispatcher {
 		super();
         this.eventDispatcherId = ExtensionKit.RegisterEventDispatcher(this);
         addEventListener(IOSNetworkingEvent.COMPLETE, function(e: Dynamic) {
-        	trace(e);
+        	// trace(e);
         	if (e.error == "SUCCESS") {
         		onData(e.data);
         	} else {
@@ -73,8 +73,8 @@ class IOSNetworking {
 		d.onData = onData;
 		d.onError = onError;
 
-		trace("Header: " + Json.stringify(header, null, "    "));
-		trace("Parameters: " + Json.stringify(parameters, null, "    "));
+		// trace("Header: " + Json.stringify(header, null, "    "));
+		// trace("Parameters: " + Json.stringify(parameters, null, "    "));
 
 		return openfl_ios_networking_http_request(d.eventDispatcherId, url, method, Json.stringify(header, null, "    "),  Json.stringify(parameters, null, "    "));
 	}
