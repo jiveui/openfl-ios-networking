@@ -76,7 +76,7 @@ namespace openfl_ios_networking {
 		request.HTTPMethod = method;
 		// [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		// [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-		[request addValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
+		[request addValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-Length"];
 
 		if ([@"POST" isEqual:method]) {
 			[request setHTTPBody:data];
@@ -89,8 +89,8 @@ namespace openfl_ios_networking {
 		__block NSError *error;
 
 		NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *d, NSURLResponse *r, NSError *e) {
-			NSLog(@"completionHandler");
-			inData = d;
+			NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
+            inData = [[NSData alloc] initWithData: d];
 			response = r;
 			error = e;
 			dispatch_semaphore_signal(semaphore);
@@ -107,10 +107,12 @@ namespace openfl_ios_networking {
 
 		extensionkit::DispatchEventToHaxeInstance(eventDispatcherId, "IOSNetworkingEvent",
               extensionkit::CSTRING, "openfl_ios_networking_complete",
-              extensionkit::CSTRING, (nil != [inData bytes]) ? (const char *)[inData bytes] : "ERROR",
+              extensionkit::CSTRING, (nil != [inData bytes] && *(char *)[inData bytes] != 0) ? (const char *)[inData bytes] : "ERROR",
               extensionkit::CSTRING, (nil != error) 
               				? ((NULL != [[error localizedDescription] UTF8String]) ? [[error localizedDescription] UTF8String] : "ERROR")
               				: "SUCCESS",
               extensionkit::CEND);
+
+		[inData release];
 	}
 }
