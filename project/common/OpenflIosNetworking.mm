@@ -66,6 +66,7 @@ namespace openfl_ios_networking {
 
 		NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
 		config.HTTPAdditionalHeaders = header;
+		config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
 
 		NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
 	
@@ -76,9 +77,9 @@ namespace openfl_ios_networking {
 		request.HTTPMethod = method;
 		// [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		// [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-		[request addValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-Length"];
 
 		if ([@"POST" isEqual:method]) {
+			[request addValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-Length"];
 			[request setHTTPBody:data];
 		}
 
@@ -89,7 +90,11 @@ namespace openfl_ios_networking {
 		__block NSError *error;
 
 		NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *d, NSURLResponse *r, NSError *e) {
-			// NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
+			// if (nil != d) {
+			// 	NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
+			// } else {
+			// 	NSLog(@"completionHandler. Data=nil");
+			// }
             inData = [[NSData alloc] initWithData: d];
 			response = r;
 			error = e;
