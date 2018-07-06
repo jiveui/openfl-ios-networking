@@ -2,11 +2,13 @@
 #include <UIKit/UIKit.h>
 
 #include "ExtensionKitIPhone.h"
-#include "OpenflIosNetworking.h"
+#include "Utils.h"
 
-namespace openfl_ios_networking {
 
-	NSDictionary * parseJsonObject(const char *json) {
+namespace iosnetworking {
+	
+	
+NSDictionary * parseJsonObject(const char *json) {
 		NSData * data = [[[NSString alloc] initWithCString: json encoding:NSUTF8StringEncoding] dataUsingEncoding:NSUTF8StringEncoding];
 		
 		NSLog([[NSString alloc] initWithCString: json encoding:NSUTF8StringEncoding]);
@@ -120,4 +122,6 @@ namespace openfl_ios_networking {
 
 		[inData release];
 	}
+	
+	
 }

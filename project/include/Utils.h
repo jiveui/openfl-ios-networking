@@ -1,8 +1,12 @@
-#ifndef OPENFLIOSNETWORKING_H
-#define OPENFLIOSNETWORKING_H
+#ifndef IOSNETWORKING_H
+#define IOSNETWORKING_H
 
-namespace openfl_ios_networking {
+
+namespace iosnetworking {
+
 	void httpRequest(int eventDispacherId, const char *url,  const char *method, const char *headerJson, const char *parametersJson);
+	
 }
+
 
 #endif

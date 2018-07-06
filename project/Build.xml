@@ -4,11 +4,11 @@
 	
 	<files id="common">
 		
-		<compilerflag value="-Iinclude" if="iphone"/>
+		<compilerflag value="-Iinclude"/>
 		<compilerflag value="-I../../extensionkit/project/include"/>
-		
+
 		<file name="common/ExternalInterface.cpp"/>
-		<file name="common/OpenflIosNetworking.mm"/>
+		<file name="common/IOSNetworking.mm"/>
 		
 	</files>
 	
@@ -18,7 +18,7 @@
 	
 	<set name="DEBUGEXTRA" value="-debug" if="fulldebug" />
 	
-	<target id="NDLL" output="${LIBPREFIX}openfl_ios_networking${MSVC_LIB_VERSION}${DEBUGEXTRA}${LIBEXTRA}" tool="linker" toolid="${STD_MODULE_LINK}">
+	<target id="NDLL" output="${LIBPREFIX}iosnetworking${MSVC_LIB_VERSION}${DEBUGEXTRA}${LIBEXTRA}" tool="linker" toolid="${STD_MODULE_LINK}">
 		
 		<outdir name="../ndll/${BINDIR}"/>
 		<ext value=".ndll" if="windows || mac || linux"/>
