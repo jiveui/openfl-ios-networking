@@ -64,12 +64,14 @@ class Http {
 			onError = old;
 			onError(e);
 		}
+		// trace(url);
+		// trace(method);
 		IOSNetworking.httpRequest(url,
 			method, 
 			prepareHeaders(), 
 			prepareParameters(), 
 			function(data) {
-				trace("Data: " + data);
+				 // trace("Data: " + data);
 				me.onData(me.responseData = data);	
 			},
 			onError);
