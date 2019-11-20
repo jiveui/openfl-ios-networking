@@ -85,42 +85,26 @@ NSDictionary * parseJsonObject(const char *json) {
 			[request setHTTPBody:data];
 		}
 
-		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
-		__block NSData *inData;
-		__block NSURLResponse *response;
-		__block NSError *error;
-
 		NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *d, NSURLResponse *r, NSError *e) {
 			// if (nil != d) {
 			// 	NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
 			// } else {
 			// 	NSLog(@"completionHandler. Data=nil");
 			// }
-            inData = [[NSData alloc] initWithData: d];
-			response = r;
-			error = e;
-			dispatch_semaphore_signal(semaphore);
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				      extensionkit::DispatchEventToHaxeInstance(eventDispatcherId, "IOSNetworkingEvent",
+			              extensionkit::CSTRING, "openfl_ios_networking_complete",
+			              extensionkit::CSTRING, (nil != [d bytes] && *(char *)[d bytes] != 0) ? (const char *)[d bytes] : "ERROR",
+			              extensionkit::CSTRING, (nil != e) 
+			              				? ((NULL != [[e localizedDescription] UTF8String]) ? [[e localizedDescription] UTF8String] : "ERROR")
+			              				: "SUCCESS",
+			              extensionkit::CEND);
+				
+			});
 		}];
-
-		
-		// dispatch_sync(dispatch_get_main_queue(), ^{});
 
 
 		[task resume];
-
-		dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-		dispatch_release(semaphore);
-
-		extensionkit::DispatchEventToHaxeInstance(eventDispatcherId, "IOSNetworkingEvent",
-              extensionkit::CSTRING, "openfl_ios_networking_complete",
-              extensionkit::CSTRING, (nil != [inData bytes] && *(char *)[inData bytes] != 0) ? (const char *)[inData bytes] : "ERROR",
-              extensionkit::CSTRING, (nil != error) 
-              				? ((NULL != [[error localizedDescription] UTF8String]) ? [[error localizedDescription] UTF8String] : "ERROR")
-              				: "SUCCESS",
-              extensionkit::CEND);
-
-		[inData release];
 	}
 	
 	
