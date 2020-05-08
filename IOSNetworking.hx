@@ -30,6 +30,8 @@ class IOSNetworkingEvent extends Event {
 }
 
 class IOSNetworkingEventDispatcher extends EventDispatcher {
+	public var headers: String;
+	public var parameters: String;
 	public dynamic function onData( data : String ) {}
 	public dynamic function onError( msg : String ) {}
 	public dynamic function onStatus( status : Int ) {}
@@ -72,11 +74,13 @@ class IOSNetworking {
 		var d = new IOSNetworkingEventDispatcher();
 		d.onData = onData;
 		d.onError = onError;
+		d.headers = Json.stringify(header, null, "    ");
+		d.parameters = Json.stringify(parameters, null, "    ");
 
-		// trace("Header: " + Json.stringify(header, null, "    "));
-		// trace("Parameters: " + Json.stringify(parameters, null, "    "));
+		trace("Header: " + d.headers);
+		trace("Parameters: " + d.parameters);
 
-		return openfl_ios_networking_http_request(d.eventDispatcherId, url, method, Json.stringify(header, null, "    "),  Json.stringify(parameters, null, "    "));
+		return openfl_ios_networking_http_request(d.eventDispatcherId, url, method, d.headers, d.parameters);
 	}
 	
 	

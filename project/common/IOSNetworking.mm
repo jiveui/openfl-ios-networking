@@ -7,19 +7,19 @@
 
 namespace iosnetworking {
 	
-	
-NSDictionary * parseJsonObject(const char *json) {
-		NSData * data = [[[NSString alloc] initWithCString: json encoding:NSUTF8StringEncoding] dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary * parseJsonObject(const char *json) {
+		NSString * jsonString = [[NSString alloc] initWithCString: json encoding:NSUTF8StringEncoding];
+		NSData * data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
 		
-		NSLog([[NSString alloc] initWithCString: json encoding:NSUTF8StringEncoding]);
-
 		NSError * jsonError;
 		
 		id parsedThing = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
 		if (parsedThing == nil)	{
+			NSLog(@"iosnetworking::parseJsonObject Error: data can not be parsed");
 		    // Error
 		    return nil;
 		} else if ([parsedThing isKindOfClass: [NSArray class]]) {
+			NSLog(@"iosnetworking::parseJsonObject Error: parsed data is array");
 		    // handle array, parsedThing can be cast as an NSArray safely
 		    return nil;
 		} else {
@@ -56,6 +56,7 @@ NSDictionary * parseJsonObject(const char *json) {
 	    // Delete last character of '&'
 	    NSRange lastCharRange = {[stringOfParamters length] - 1, 1};
 	    [stringOfParamters deleteCharactersInRange:lastCharRange];
+
 	    return stringOfParamters;
 	}
 
@@ -66,17 +67,17 @@ NSDictionary * parseJsonObject(const char *json) {
 		NSDictionary * header = parseJsonObject(headerJson);
 		NSDictionary * parameters = parseJsonObject(parametersJson);
 
-		NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-		config.HTTPAdditionalHeaders = header;
-		config.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-
-		NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-	
 		// NSData *data = [NSJSONSerialization dataWithJSONObject:parameters options:kNilOptions error:&error];
 		NSData *data = [makeParamtersString(parameters, NSUTF8StringEncoding) dataUsingEncoding:NSUTF8StringEncoding]; 
 
 		NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 		request.HTTPMethod = method;
+		request.allHTTPHeaderFields = header;
+		if (@available(iOS 13, *)) {
+		    request.cachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
+		} else {
+		    request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+		}
 		// [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		// [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
@@ -85,7 +86,7 @@ NSDictionary * parseJsonObject(const char *json) {
 			[request setHTTPBody:data];
 		}
 
-		NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *d, NSURLResponse *r, NSError *e) {
+		NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *d, NSURLResponse *r, NSError *e) {
 			// if (nil != d) {
 			// 	NSLog(@"completionHandler. Data=%@", [[NSString alloc] initWithCString: (char *)d.bytes encoding:NSUTF8StringEncoding]);
 			// } else {
