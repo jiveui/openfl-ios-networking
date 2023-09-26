@@ -92,6 +92,17 @@ namespace iosnetworking {
 			// } else {
 			// 	NSLog(@"completionHandler. Data=nil");
 			// }
+
+            NSInteger statusCode;
+			if ([r isKindOfClass:[NSHTTPURLResponse class]]) {
+                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)r;
+                statusCode = httpResponse.statusCode;
+                NSLog(@"HTTP Status Code: %ld", (long)statusCode);
+            } else {
+                NSLog(@"Response is not an HTTP response");
+            }
+            NSNumber *statusCodeNumber = @(statusCode);
+
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				      extensionkit::DispatchEventToHaxeInstance(eventDispatcherId, "IOSNetworkingEvent",
 			              extensionkit::CSTRING, "openfl_ios_networking_complete",
@@ -99,6 +110,7 @@ namespace iosnetworking {
 			              extensionkit::CSTRING, (nil != e) 
 			              				? ((NULL != [[e localizedDescription] UTF8String]) ? [[e localizedDescription] UTF8String] : "ERROR")
 			              				: "SUCCESS",
+                          extensionkit::CINT, [statusCodeNumber intValue],
 			              extensionkit::CEND);
 				
 			});

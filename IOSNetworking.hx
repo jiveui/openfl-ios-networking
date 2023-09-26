@@ -21,10 +21,12 @@ class IOSNetworkingEvent extends Event {
 
 	public var data(default, null): String;
 	public var error(default, null): String;
+	public var status(default, null): Int;
 
-    public function new(type: String, data: String, error: String) {
+    public function new(type: String, data: String, error: String, status:Int) {
     	this.data = data;
     	this.error = error;
+		this.status = status;
         super(type, true, true);
     }
 }
@@ -32,9 +34,8 @@ class IOSNetworkingEvent extends Event {
 class IOSNetworkingEventDispatcher extends EventDispatcher {
 	public var headers: String;
 	public var parameters: String;
-	public dynamic function onData( data : String ) {}
+	public dynamic function onData( data : String, status: Int ) {}
 	public dynamic function onError( msg : String ) {}
-	public dynamic function onStatus( status : Int ) {}
 
 	public var eventDispatcherId(default, null):Int = 0;
 
@@ -44,7 +45,7 @@ class IOSNetworkingEventDispatcher extends EventDispatcher {
         addEventListener(IOSNetworkingEvent.COMPLETE, function(e: Dynamic) {
         	// trace(e);
         	if (e.error == "SUCCESS") {
-        		onData(e.data);
+        		onData(e.data, e.status);
         	} else {
         		onError(e.error);
         	}
@@ -67,7 +68,7 @@ class IOSNetworking {
         ExtensionKit.Initialize();
     }	
 
-	public static function httpRequest(url: String, method: String, header: StringMap<String>, parameters: StringMap<String>, onData: String -> Void, onError: String -> Void) {
+	public static function httpRequest(url: String, method: String, header: StringMap<String>, parameters: StringMap<String>, onData: String -> Int -> Void, onError: String -> Void) {
 
 		Initialize();
 
