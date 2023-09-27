@@ -78,9 +78,6 @@ class IOSNetworking {
 		d.headers = Json.stringify(header, null, "    ");
 		d.parameters = Json.stringify(parameters, null, "    ");
 
-		trace("Header: " + d.headers);
-		trace("Parameters: " + d.parameters);
-
 		return openfl_ios_networking_http_request(d.eventDispatcherId, url, method, d.headers, d.parameters);
 	}
 	
