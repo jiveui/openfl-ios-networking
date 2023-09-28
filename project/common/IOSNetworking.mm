@@ -101,7 +101,7 @@ namespace iosnetworking {
             } else {
                 NSLog(@"Response is not an HTTP response");
             }
-            NSNumber *statusCodeNumber = @(statusCode);
+            NSNumber *statusCodeNumber = @(statusCode ?: 0);
 
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				      extensionkit::DispatchEventToHaxeInstance(eventDispatcherId, "IOSNetworkingEvent",
